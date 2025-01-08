@@ -1,0 +1,12 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Plugin
+metadata:
+  name: test-plugin
+spec:
+  forProvider:
+    organization: "sentry"
+    projectRef:
+      name: "test-project"
+    plugin: "webhooks"
+    config:
+      urls: "https://my.endpoint.srv/webhook"

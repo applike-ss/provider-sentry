@@ -1,0 +1,13 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Team
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sentry/v1alpha1/team
+  labels:
+    testing.upbound.io/example-name: default
+  name: default
+spec:
+  forProvider:
+    name: my-team
+    organization: my-organization
+    slug: my-team

@@ -1,0 +1,17 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Project
+metadata:
+  name: test-project
+spec:
+  forProvider:
+    name: "test-project"
+    slug: "test-project"
+    teamsRefs:
+      - name: test-team-1
+      - name: test-team-2
+    platform: "go"
+    organization: "sentry"
+    resolveAge: 720
+  writeConnectionSecretToRef:
+    name: test-project
+    namespace: crossplane-system

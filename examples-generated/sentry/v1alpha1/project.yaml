@@ -1,0 +1,18 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Project
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sentry/v1alpha1/project
+  labels:
+    testing.upbound.io/example-name: default
+  name: default
+spec:
+  forProvider:
+    name: Web App
+    organization: my-organization
+    platform: javascript
+    resolveAge: 720
+    slug: web-app
+    teamsRefs:
+    - name: example
+    - name: example

@@ -1,0 +1,12 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Team
+metadata:
+  name: test-team-1
+spec:
+  forProvider:
+    name: "Test Team 1"
+    organization: "sentry"
+    slug: "test-team-1"
+  writeConnectionSecretToRef:
+    name: test-team-1
+    namespace: crossplane-system

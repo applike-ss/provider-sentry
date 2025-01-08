@@ -1,0 +1,17 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Plugin
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sentry/v1alpha1/plugin
+  labels:
+    testing.upbound.io/example-name: default
+  name: default
+spec:
+  forProvider:
+    config:
+      webhook: slack://webhook
+    organization: my-organization
+    plugin: slack
+    projectSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example

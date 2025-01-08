@@ -1,40 +1,952 @@
-name: hashicorp/null
+name: jianyuan/sentry
 resources:
-    null_resource:
+    sentry_dashboard:
         subCategory: ""
-        description: The null_resource resource implements the standard resource lifecycle but takes no further action. On Terraform 1.4 and later, use the terraform_data resource type https://developer.hashicorp.com/terraform/language/resources/terraform-data instead. The triggers argument allows specifying an arbitrary set of values that, when changed, will cause the resource to be replaced.
-        name: null_resource
-        title: null_resource Resource - terraform-provider-null
+        description: Sentry Dashboard resource.
+        name: sentry_dashboard
+        title: sentry_dashboard Resource - terraform-provider-sentry
         examples:
-            - name: cluster
+            - name: main
               manifest: |-
                 {
-                  "connection": [
+                  "organization": "${data.sentry_organization.main.id}",
+                  "title": "Test dashboard",
+                  "widget": [
                     {
-                      "host": "${element(aws_instance.cluster[*].public_ip, 0)}"
+                      "display_type": "big_number",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 1,
+                          "min_h": 1,
+                          "w": 1,
+                          "x": 0,
+                          "y": 0
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "conditions": "!event.type:transaction",
+                          "fields": [
+                            "count()"
+                          ],
+                          "order_by": "count()"
+                        }
+                      ],
+                      "title": "Number of Errors",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "big_number",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 1,
+                          "min_h": 1,
+                          "w": 1,
+                          "x": 1,
+                          "y": 0
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count_unique(issue)"
+                          ],
+                          "conditions": "!event.type:transaction",
+                          "fields": [
+                            "count_unique(issue)"
+                          ],
+                          "order_by": "count_unique(issue)"
+                        }
+                      ],
+                      "title": "Number of Issues",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "line",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 2,
+                          "min_h": 2,
+                          "w": 4,
+                          "x": 2,
+                          "y": 0
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "conditions": "!event.type:transaction",
+                          "fields": [
+                            "count()"
+                          ],
+                          "name": "Events",
+                          "order_by": "count()"
+                        }
+                      ],
+                      "title": "Events",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "line",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 2,
+                          "min_h": 2,
+                          "w": 1,
+                          "x": 1,
+                          "y": 2
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count_unique(user)"
+                          ],
+                          "conditions": "has:user.email !event.type:transaction",
+                          "fields": [
+                            "count_unique(user)"
+                          ],
+                          "name": "Known Users",
+                          "order_by": "count_unique(user)"
+                        },
+                        {
+                          "aggregates": [
+                            "count_unique(user)"
+                          ],
+                          "conditions": "!has:user.email !event.type:transaction",
+                          "fields": [
+                            "count_unique(user)"
+                          ],
+                          "name": "Anonymous Users",
+                          "order_by": "count_unique(user)"
+                        }
+                      ],
+                      "title": "Affected Users",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "line",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 2,
+                          "min_h": 2,
+                          "w": 1,
+                          "x": 0,
+                          "y": 2
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "conditions": "error.handled:true",
+                          "fields": [
+                            "count()"
+                          ],
+                          "name": "Handled",
+                          "order_by": "count()"
+                        },
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "conditions": "error.handled:false",
+                          "fields": [
+                            "count()"
+                          ],
+                          "name": "Unhandled",
+                          "order_by": "count()"
+                        }
+                      ],
+                      "title": "Handled vs. Unhandled",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "world_map",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 4,
+                          "min_h": 2,
+                          "w": 2,
+                          "x": 4,
+                          "y": 6
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "conditions": "!event.type:transaction has:geo.country_code",
+                          "fields": [
+                            "count()"
+                          ],
+                          "order_by": "count()"
+                        }
+                      ],
+                      "title": "Errors by Country",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "table",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 4,
+                          "min_h": 2,
+                          "w": 2,
+                          "x": 0,
+                          "y": 6
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "columns": [
+                            "transaction"
+                          ],
+                          "conditions": "!event.type:error",
+                          "fields": [
+                            "count()",
+                            "transaction"
+                          ],
+                          "order_by": "-count()"
+                        }
+                      ],
+                      "title": "High Throughput Transactions",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "table",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 4,
+                          "min_h": 2,
+                          "w": 1,
+                          "x": 5,
+                          "y": 2
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "columns": [
+                            "browser.name"
+                          ],
+                          "conditions": "!event.type:transaction has:browser.name",
+                          "fields": [
+                            "browser.name",
+                            "count()"
+                          ],
+                          "order_by": "-count()"
+                        }
+                      ],
+                      "title": "Errors by Browser",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "big_number",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 1,
+                          "min_h": 1,
+                          "w": 1,
+                          "x": 0,
+                          "y": 1
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "user_misery(300)"
+                          ],
+                          "fields": [
+                            "user_misery(300)"
+                          ]
+                        }
+                      ],
+                      "title": "Overall User Misery",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "big_number",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 1,
+                          "min_h": 1,
+                          "w": 1,
+                          "x": 1,
+                          "y": 1
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "apdex(300)"
+                          ],
+                          "fields": [
+                            "apdex(300)"
+                          ]
+                        }
+                      ],
+                      "title": "Overall Apdex",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "top_n",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 2,
+                          "min_h": 2,
+                          "w": 2,
+                          "x": 0,
+                          "y": 4
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "columns": [
+                            "transaction"
+                          ],
+                          "conditions": "!event.type:error",
+                          "fields": [
+                            "transaction",
+                            "count()"
+                          ],
+                          "order_by": "-count()"
+                        }
+                      ],
+                      "title": "High Throughput Transactions",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "table",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 4,
+                          "min_h": 2,
+                          "w": 2,
+                          "x": 2,
+                          "y": 2
+                        }
+                      ],
+                      "query": [
+                        {
+                          "columns": [
+                            "assignee",
+                            "issue",
+                            "title"
+                          ],
+                          "conditions": "assigned_or_suggested:me is:unresolved",
+                          "fields": [
+                            "assignee",
+                            "issue",
+                            "title"
+                          ],
+                          "order_by": "priority"
+                        }
+                      ],
+                      "title": "Issues Assigned to Me or My Teams",
+                      "widget_type": "issue"
+                    },
+                    {
+                      "display_type": "table",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 4,
+                          "min_h": 2,
+                          "w": 2,
+                          "x": 2,
+                          "y": 6
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "user_misery(300)"
+                          ],
+                          "columns": [
+                            "transaction"
+                          ],
+                          "fields": [
+                            "transaction",
+                            "user_misery(300)"
+                          ],
+                          "order_by": "-user_misery(300)"
+                        }
+                      ],
+                      "title": "Transactions Ordered by Misery",
+                      "widget_type": "discover"
+                    },
+                    {
+                      "display_type": "top_n",
+                      "interval": "5m",
+                      "layout": [
+                        {
+                          "h": 4,
+                          "min_h": 2,
+                          "w": 1,
+                          "x": 4,
+                          "y": 2
+                        }
+                      ],
+                      "query": [
+                        {
+                          "aggregates": [
+                            "count()"
+                          ],
+                          "columns": [
+                            "browser.name"
+                          ],
+                          "conditions": "event.type:error has:browser.name",
+                          "fields": [
+                            "browser.name",
+                            "count()"
+                          ],
+                          "order_by": "-count()"
+                        }
+                      ],
+                      "title": "Errors by Browser Over Time",
+                      "widget_type": "discover"
+                    }
+                  ]
+                }
+              references:
+                organization: data.sentry_organization.main.id
+        argumentDocs:
+            aggregates: (Set of String)
+            columns: (Set of String)
+            conditions: (String)
+            display_type: (String)
+            field_aliases: (List of String)
+            fields: (List of String)
+            h: (Number)
+            id: (String) The ID of this resource.
+            internal_id: (String) The internal ID for this dashboard.
+            interval: (String)
+            layout: '(Block List, Min: 1, Max: 1) (see below for nested schema)'
+            limit: (Number)
+            min_h: (Number)
+            name: (String)
+            order_by: (String)
+            organization: (String) The slug of the organization the dashboard belongs to.
+            query: '(Block List, Min: 1) (see below for nested schema)'
+            title: (String) Dashboard title.
+            w: (Number)
+            widget: (Block List) Dashboard widgets. (see below for nested schema)
+            widget_type: (String)
+            x: (Number)
+            "y": (Number)
+        importStatements: []
+    sentry_issue_alert:
+        subCategory: ""
+        description: Sentry Issue Alert resource. Note that there's no public documentation for the values of conditions, filters, and actions. You can either inspect the request payload sent when creating or editing an issue alert on Sentry or inspect Sentry's rules registry in the source code https://github.com/getsentry/sentry/tree/master/src/sentry/rules. Since v0.11.2, you should also omit the name property of each condition, filter, and action.
+        name: sentry_issue_alert
+        title: sentry_issue_alert Resource - terraform-provider-sentry
+        examples:
+            - name: main
+              manifest: |-
+                {
+                  "action_match": "any",
+                  "actions": [
+                    {
+                      "id": "sentry.mail.actions.NotifyEmailAction",
+                      "targetIdentifier": "",
+                      "targetType": "IssueOwners"
+                    },
+                    {
+                      "id": "sentry.mail.actions.NotifyEmailAction",
+                      "targetIdentifier": "${sentry_team.main.team_id}",
+                      "targetType": "Team"
+                    },
+                    {
+                      "id": "sentry.rules.actions.notify_event.NotifyEventAction"
+                    },
+                    {
+                      "channel": "#general",
+                      "id": "sentry.integrations.slack.notify_action.SlackNotifyServiceAction",
+                      "workspace": "${data.sentry_organization_integration.slack.internal_id}"
                     }
                   ],
-                  "provisioner": {
-                    "remote-exec": [
-                      {
-                        "inline": [
-                          "bootstrap-cluster.sh ${join(\" \",\n      aws_instance.cluster[*].private_ip)}"
-                        ]
-                      }
-                    ]
-                  },
-                  "triggers": {
-                    "cluster_instance_ids": "${join(\",\", aws_instance.cluster[*].id)}"
-                  }
-                }
-              dependencies:
-                aws_instance.cluster: |-
+                  "conditions": [
                     {
-                      "ami": "ami-0dcc1e21636832c5d",
-                      "count": 3,
-                      "instance_type": "m5.large"
+                      "id": "sentry.rules.conditions.first_seen_event.FirstSeenEventCondition"
+                    },
+                    {
+                      "id": "sentry.rules.conditions.regression_event.RegressionEventCondition"
+                    },
+                    {
+                      "comparisonType": "count",
+                      "id": "sentry.rules.conditions.event_frequency.EventFrequencyCondition",
+                      "interval": "1h",
+                      "value": 100
+                    },
+                    {
+                      "comparisonType": "count",
+                      "id": "sentry.rules.conditions.event_frequency.EventUniqueUserFrequencyCondition",
+                      "interval": "1h",
+                      "value": 100
+                    },
+                    {
+                      "comparisonType": "count",
+                      "id": "sentry.rules.conditions.event_frequency.EventFrequencyPercentCondition",
+                      "interval": "1h",
+                      "value": "50.0"
+                    }
+                  ],
+                  "filter_match": "any",
+                  "filters": [
+                    {
+                      "comparison_type": "older",
+                      "id": "sentry.rules.filters.age_comparison.AgeComparisonFilter",
+                      "time": "minute",
+                      "value": 10
+                    },
+                    {
+                      "id": "sentry.rules.filters.issue_occurrences.IssueOccurrencesFilter",
+                      "value": 10
+                    },
+                    {
+                      "id": "sentry.rules.filters.assigned_to.AssignedToFilter",
+                      "targetIdentifier": "${sentry_team.main.team_id}",
+                      "targetType": "Team"
+                    },
+                    {
+                      "id": "sentry.rules.filters.latest_release.LatestReleaseFilter"
+                    },
+                    {
+                      "attribute": "message",
+                      "id": "sentry.rules.filters.event_attribute.EventAttributeFilter",
+                      "match": "co",
+                      "value": "test"
+                    },
+                    {
+                      "id": "sentry.rules.filters.tagged_event.TaggedEventFilter",
+                      "key": "test",
+                      "match": "co",
+                      "value": "test"
+                    },
+                    {
+                      "id": "sentry.rules.filters.level.LevelFilter",
+                      "level": "50",
+                      "match": "eq"
+                    }
+                  ],
+                  "frequency": 30,
+                  "name": "My issue alert",
+                  "organization": "${sentry_project.main.organization}",
+                  "project": "${sentry_project.main.id}"
+                }
+              references:
+                organization: sentry_project.main.organization
+                project: sentry_project.main.id
+        argumentDocs:
+            action_match: (String) Trigger actions when an event is captured by Sentry and any or all of the specified conditions happen.
+            actions: (List of Map of String) List of actions.
+            conditions: (List of Map of String) List of conditions.
+            environment: (String) Perform issue alert in a specific environment.
+            filter_match: (String) Trigger actions if all, any, or none of the specified filters match.
+            filters: (List of Map of String) List of filters.
+            frequency: (Number) Perform actions at most once every X minutes for this issue. Defaults to 30.
+            id: (String) The ID of this resource.
+            internal_id: (String) The internal ID for this issue alert.
+            name: (String) The issue alert name.
+            organization: (String) The slug of the organization the issue alert belongs to.
+            project: (String) The slug of the project to create the issue alert for.
+            projects: (List of String, Deprecated) Use project (singular) instead.
+        importStatements:
+            - |-
+              # import using the organization, project slugs and rule id from the URL:
+              # https://sentry.io/organizations/[org-slug]/alerts/rules/[project-slug]/[rule-id]/details/
+              terraform import sentry_issue_alert.default org-slug/project-slug/rule-id
+    sentry_key:
+        subCategory: ""
+        description: Sentry Key resource.
+        name: sentry_key
+        title: sentry_key Resource - terraform-provider-sentry
+        examples:
+            - name: default
+              manifest: |-
+                {
+                  "name": "My Key",
+                  "organization": "my-organization",
+                  "project": "web-app"
+                }
+        argumentDocs:
+            dsn_csp: (String) DSN for the Content Security Policy (CSP) for the key.
+            dsn_public: (String) DSN for the key.
+            dsn_secret: (String, Deprecated)
+            id: (String) The ID of this resource.
+            is_active: (Boolean) Flag indicating the key is active.
+            name: (String) The name of the key.
+            organization: (String) The slug of the organization the key should be created for.
+            project: (String) The slug of the project the key should be created for.
+            project_id: (Number) The ID of the project that the key belongs to.
+            public: (String) Public key portion of the client key.
+            rate_limit_count: (Number) Number of events that can be reported within the rate limit window.
+            rate_limit_window: (Number) Length of time that will be considered when checking the rate limit.
+            secret: (String) Secret key portion of the client key.
+        importStatements:
+            - |-
+              # import using the organization, project slugs and key id from the URL:
+              # https://sentry.io/settings/[org-slug]/projects/[project-slug]/keys/[key-id]/
+              terraform import sentry_project.default org-slug/project-slug/key-id
+    sentry_metric_alert:
+        subCategory: ""
+        description: Sentry Metric Alert resource.
+        name: sentry_metric_alert
+        title: sentry_metric_alert Resource - terraform-provider-sentry
+        examples:
+            - name: main
+              manifest: |-
+                {
+                  "aggregate": "count()",
+                  "dataset": "events",
+                  "name": "My metric alert",
+                  "organization": "${sentry_project.main.organization}",
+                  "project": "${sentry_project.main.id}",
+                  "query": "",
+                  "resolve_threshold": 0,
+                  "threshold_type": 0,
+                  "time_window": 60,
+                  "trigger": [
+                    {
+                      "action": [
+                        {
+                          "target_identifier": "${sentry_team.main.team_id}",
+                          "target_type": "team",
+                          "type": "email"
+                        }
+                      ],
+                      "alert_threshold": 300,
+                      "label": "critical",
+                      "threshold_type": 0
+                    },
+                    {
+                      "action": [
+                        {
+                          "integration_id": "${data.sentry_organization_integration.slack.id}",
+                          "target_identifier": "#slack-channel",
+                          "target_type": "specific",
+                          "type": "slack"
+                        }
+                      ],
+                      "alert_threshold": 300,
+                      "label": "critical",
+                      "threshold_type": 0
+                    },
+                    {
+                      "alert_threshold": 100,
+                      "label": "warning",
+                      "threshold_type": 0
+                    }
+                  ]
+                }
+              references:
+                organization: sentry_project.main.organization
+                project: sentry_project.main.id
+                trigger.action.integration_id: data.sentry_organization_integration.slack.id
+                trigger.action.target_identifier: sentry_team.main.team_id
+        argumentDocs:
+            action: (Block List) (see below for nested schema)
+            aggregate: (String) The aggregation criteria to apply
+            alert_threshold: (Number)
+            dataset: (String) The Sentry Alert category
+            environment: (String) Perform Alert rule in a specific environment
+            event_types: (List of String) The events type of dataset.
+            id: (String) The ID of this resource.
+            integration_id: (Number)
+            internal_id: (String) The internal ID for this metric alert.
+            label: (String)
+            name: (String) The metric alert name.
+            organization: (String) The slug of the organization the metric alert belongs to.
+            owner: (String) Specifies the owner id of this Alert rule
+            project: (String) The slug of the project to create the metric alert for.
+            query: (String) The query filter to apply
+            resolve_threshold: (Number) The value at which the Alert rule resolves
+            target_identifier: (String)
+            target_type: (String)
+            threshold_type: (Number) The type of threshold
+            time_window: (Number) The period to evaluate the Alert rule in minutes
+            trigger: '(Block List, Min: 1) (see below for nested schema)'
+            type: (String)
+        importStatements:
+            - |-
+              # import using the organization, project slugs and rule id from the URL:
+              # https://sentry.io/organizations/[org-slug]/projects/[project-slug]/
+              # https://sentry.io/organizations/[org-slug]/alerts/rules/details/[rule-id]/
+              # or
+              # https://sentry.io/organizations/[org-slug]/alerts/metric-rules/[project-slug]/[rule-id]/
+              terraform import sentry_metric_alert.default org-slug/project-slug/rule-id
+    sentry_organization:
+        subCategory: ""
+        description: Sentry Organization resource.
+        name: sentry_organization
+        title: sentry_organization Resource - terraform-provider-sentry
+        examples:
+            - name: default
+              manifest: |-
+                {
+                  "agree_terms": true,
+                  "name": "My Organization",
+                  "slug": "my-organization"
+                }
+        argumentDocs:
+            agree_terms: (Boolean) You agree to the applicable terms of service and privacy policy.
+            id: (String) The ID of this resource.
+            internal_id: (String) The internal ID for this organization.
+            name: (String) The human readable name for the organization.
+            slug: (String) The unique URL slug for this organization.
+        importStatements:
+            - |-
+              # import using the organization slug from the URL:
+              # https://sentry.io/organizations/[org-slug]/issues/
+              terraform import sentry_organization.default org-slug
+    sentry_organization_code_mapping:
+        subCategory: ""
+        description: Sentry Organization Code Mapping resource.
+        name: sentry_organization_code_mapping
+        title: sentry_organization_code_mapping Resource - terraform-provider-sentry
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "default_branch": "main",
+                  "integration_id": "${data.sentry_organization_integration.github.internal_id}",
+                  "organization": "my-organization",
+                  "project_id": "${sentry_project.this.internal_id}",
+                  "repository_id": "${sentry_organization_repository_github.this.internal_id}",
+                  "source_root": "src/",
+                  "stack_root": "/"
+                }
+              references:
+                integration_id: data.sentry_organization_integration.github.internal_id
+                project_id: sentry_project.this.internal_id
+                repository_id: sentry_organization_repository_github.this.internal_id
+              dependencies:
+                sentry_organization_repository_github.this: |-
+                    {
+                      "identifier": "my-github-organization/my-github-repo",
+                      "integration_id": "${data.sentry_organization_integration.github.internal_id}",
+                      "organization": "my-organization"
+                    }
+                sentry_project.this: |-
+                    {
+                      "name": "Web App",
+                      "organization": "my-organization",
+                      "platform": "javascript",
+                      "resolve_age": 720,
+                      "slug": "web-app",
+                      "team": "my-team"
                     }
         argumentDocs:
-            id: (String) This is set to a random value at create time.
-            triggers: (Map of String) A map of arbitrary strings that, when changed, will force the null resource to be replaced, re-running any associated provisioners.
+            default_branch: (String) Default branch of your code we fall back to if you do not have commit tracking set up.
+            id: (String) The ID of this resource.
+            integration_id: (String) Sentry Organization Integration ID.
+            internal_id: (String) The internal ID for this resource.
+            organization: (String) The slug of the organization the code mapping is under.
+            project_id: (String) Sentry Project ID.
+            repository_id: (String) Sentry Organization Repository ID.
+            source_root: (String) https://docs.sentry.io/product/integrations/source-code-mgmt/github/#stack-trace-linking
+            stack_root: (String) https://docs.sentry.io/product/integrations/source-code-mgmt/github/#stack-trace-linking
+        importStatements:
+            - |-
+              # import using the organization slug from the URL:
+              # https://sentry.io/settings/[org-slug]/integrations/github/[org-integration-id]/
+              # and inspect network tab for request to https://sentry.io/api/0/organizations/[org-slug]/code-mappings/
+              # find the corresponding list element and reference [code-mapping-id] from the key "id"
+              terraform import sentry_organization_code_mapping.this org-slug/31347
+    sentry_organization_member:
+        subCategory: ""
+        name: sentry_organization_member
+        title: sentry_organization_member Resource - terraform-provider-sentry
+        examples:
+            - name: john_doe
+              manifest: |-
+                {
+                  "email": "test@example.com",
+                  "organization": "my-organization",
+                  "role": "member",
+                  "teams": [
+                    "my-team"
+                  ]
+                }
+        argumentDocs:
+            email: (String) The email of the organization member.
+            expired: (Boolean) The invite has expired.
+            id: (String) The ID of this resource.
+            internal_id: (String) The internal ID for this organization membership.
+            organization: (String) The slug of the organization the user should be invited to.
+            pending: (Boolean) The invite is pending.
+            role: (String) This is the role of the organization member.
+            teams: (List of String) The teams the organization member should be added to.
+        importStatements:
+            - |-
+              # import using the organization, membership id from the URL:
+              # https://sentry.io/settings/[org-slug]/members/[member-id]/
+              terraform import sentry_organization_member.john_doe org-slug/member-id
+    sentry_organization_repository_github:
+        subCategory: ""
+        description: Sentry Github Organization Repository resource.
+        name: sentry_organization_repository_github
+        title: sentry_organization_repository_github Resource - terraform-provider-sentry
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "identifier": "my-github-organization/my-github-repo",
+                  "integration_id": "${data.sentry_organization_integration.github.internal_id}",
+                  "organization": "my-organization"
+                }
+              references:
+                integration_id: data.sentry_organization_integration.github.internal_id
+        argumentDocs:
+            id: (String) The ID of this resource.
+            identifier: (String) The repo identifier. For Github it is {github_org}/{github_repo}.
+            integration_id: (String) The organization integration ID for Github.
+            internal_id: (String) The internal ID for this organization repository.
+            organization: (String) The slug of the Sentry organization this resource belongs to.
+        importStatements:
+            - |-
+              # import using the organization slug from the URL:
+              # https://sentry.io/organizations/[org-slug]/
+              # [github-org] and [github-repo] are the slugs to your repo
+              terraform import sentry_organization_repository_github.this org-slug/github-org/github-repo
+    sentry_plugin:
+        subCategory: ""
+        description: Sentry Plugin resource.
+        name: sentry_plugin
+        title: sentry_plugin Resource - terraform-provider-sentry
+        examples:
+            - name: default
+              manifest: |-
+                {
+                  "config": {
+                    "webhook": "slack://webhook"
+                  },
+                  "organization": "my-organization",
+                  "plugin": "slack",
+                  "project": "web-app"
+                }
+        argumentDocs:
+            config: (Map of String) Plugin config.
+            id: (String) The ID of this resource.
+            organization: (String) The slug of the organization the project belongs to.
+            plugin: (String) Plugin ID.
+            project: (String) The slug of the project to create the plugin for.
         importStatements: []
+    sentry_project:
+        subCategory: ""
+        description: Sentry Project resource.
+        name: sentry_project
+        title: sentry_project Resource - terraform-provider-sentry
+        examples:
+            - name: default
+              manifest: |-
+                {
+                  "name": "Web App",
+                  "organization": "my-organization",
+                  "platform": "javascript",
+                  "resolve_age": 720,
+                  "slug": "web-app",
+                  "teams": [
+                    "my-first-team",
+                    "my-second-team"
+                  ]
+                }
+        argumentDocs:
+            color: (String)
+            digests_max_delay: (Number) The maximum amount of time (in seconds) to wait between scheduling digests for delivery.
+            digests_min_delay: (Number) The minimum amount of time (in seconds) to wait between scheduling digests for delivery after the initial scheduling.
+            features: (List of String)
+            id: (String) The ID of this resource.
+            internal_id: (String) The internal ID for this project.
+            is_bookmarked: (Boolean, Deprecated)
+            is_public: (Boolean)
+            name: (String) The name for the project.
+            organization: (String) The slug of the organization the project belongs to.
+            platform: (String) The optional platform for this project.
+            project_id: (String, Deprecated) Use internal_id instead.
+            resolve_age: (Number) Hours in which an issue is automatically resolve if not seen after this amount of time.
+            slug: (String) The optional slug for this project.
+            status: (String)
+            team: (String, Deprecated) The slug of the team to create the project for. Deprecated Use teams instead.
+            teams: (Set of String) The slugs of the teams to create the project for.
+        importStatements:
+            - |-
+              # import using the organization and team slugs from the URL:
+              # https://sentry.io/settings/[org-slug]/projects/[project-slug]/
+              terraform import sentry_project.default org-slug/project-slug
+    sentry_rule Resource - terraform-provider-sentry:
+        subCategory: ""
+        description: 'WARNING: This resource is deprecated and will be removed in the next major version. Use the sentry_issue_alert resource instead.'
+        name: sentry_rule Resource - terraform-provider-sentry
+        title: sentry_rule Resource - terraform-provider-sentry
+        argumentDocs:
+            action_match: (String) Trigger actions when an event is captured by Sentry and any or all of the specified conditions happen.
+            actions: (List of Map of String) List of actions.
+            conditions: (List of Map of String) List of conditions.
+            environment: (String) Perform issue alert in a specific environment.
+            filter_match: (String) Trigger actions if all, any, or none of the specified filters match.
+            filters: (List of Map of String) List of filters.
+            frequency: (Number) Perform actions at most once every X minutes for this issue. Defaults to 30.
+            id: (String) The ID of this resource.
+            internal_id: (String) The internal ID for this issue alert.
+            name: (String) The issue alert name.
+            organization: (String) The slug of the organization the issue alert belongs to.
+            project: (String) The slug of the project to create the issue alert for.
+            projects: (List of String, Deprecated) Use project (singular) instead.
+        importStatements: []
+    sentry_team:
+        subCategory: ""
+        description: Sentry Team resource.
+        name: sentry_team
+        title: sentry_team Resource - terraform-provider-sentry
+        examples:
+            - name: default
+              manifest: |-
+                {
+                  "name": "my-team",
+                  "organization": "my-organization",
+                  "slug": "my-team"
+                }
+        argumentDocs:
+            has_access: (Boolean)
+            id: (String) The ID of this resource.
+            internal_id: (String) The internal ID for this team.
+            is_member: (Boolean)
+            is_pending: (Boolean)
+            name: (String) The name of the team.
+            organization: (String) The slug of the organization the team should be created for.
+            slug: (String) The optional slug for this team.
+            team_id: (String, Deprecated) Use internal_id instead.
+        importStatements:
+            - |-
+              # import using the organization and team slugs from the URL:
+              # https://sentry.io/settings/[org-slug]/teams/[team-slug]/members/
+              terraform import sentry_team.default org-slug/team-slug

@@ -9,13 +9,16 @@ import (
 	_ "embed"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
-
-	"github.com/upbound/upjet-provider-template/config/null"
+	"github.com/justtrack/provider-sentry/config/issuealert"
+	"github.com/justtrack/provider-sentry/config/key"
+	"github.com/justtrack/provider-sentry/config/plugin"
+	"github.com/justtrack/provider-sentry/config/project"
+	"github.com/justtrack/provider-sentry/config/team"
 )
 
 const (
-	resourcePrefix = "template"
-	modulePath     = "github.com/upbound/upjet-provider-template"
+	resourcePrefix = "sentry"
+	modulePath     = "github.com/justtrack/provider-sentry"
 )
 
 //go:embed schema.json
@@ -27,7 +30,7 @@ var providerMetadata string
 // GetProvider returns provider configuration
 func GetProvider() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("template.upbound.io"),
+		ujconfig.WithRootGroup("justtrack.io"),
 		ujconfig.WithIncludeList(ExternalNameConfigured()),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithDefaultResourceOptions(
@@ -36,7 +39,11 @@ func GetProvider() *ujconfig.Provider {
 
 	for _, configure := range []func(provider *ujconfig.Provider){
 		// add custom config functions
-		null.Configure,
+		issuealert.Configure,
+		key.Configure,
+		plugin.Configure,
+		project.Configure,
+		team.Configure,
 	} {
 		configure(pc)
 	}
