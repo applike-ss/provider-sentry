@@ -10,7 +10,7 @@ Sentry API.
 Install the provider by using the following command after changing the image tag
 to the [latest release](https://marketplace.upbound.io/providers/justtrack/provider-sentry):
 ```
-up ctp provider install justtrack/provider-sentry:v0.1.0
+up ctp provider install justtrack/provider-sentry:v0.0.0
 ```
 
 Alternatively, you can use declarative installation:
@@ -21,7 +21,7 @@ kind: Provider
 metadata:
   name: provider-sentry
 spec:
-  package: justtrack/provider-sentry:v0.1.0
+  package: justtrack/provider-sentry:v0.0.0
 EOF
 ```
 
@@ -33,7 +33,7 @@ You can see the API reference [here](https://doc.crds.dev/github.com/justtrack/p
 
 Run code-generation pipeline:
 ```console
-go run cmd/generator/main.go "$PWD"
+make generate
 ```
 
 Run against a Kubernetes cluster:
@@ -42,16 +42,28 @@ Run against a Kubernetes cluster:
 make run
 ```
 
-Build, push, and install:
-
-```console
-make all
-```
-
 Build binary:
 
 ```console
 make build
+```
+
+Publishing to upbound marketplace:
+
+First you need to make sure that you are authenticated
+```shell
+up organization list
+```
+
+Now build the binary with
+```shell
+make build
+```
+and copy the path after `xpkg saved to ...`
+
+Eventually publish the package with
+```shell
+up xpkg push justtrack/provider-sentry:vX.Y.Z -f $FILENAME
 ```
 
 ## Report a Bug

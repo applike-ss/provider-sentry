@@ -2,3 +2,9 @@ apiVersion: meta.pkg.crossplane.io/v1
 kind: Provider
 metadata:
   name: provider-sentry
+  annotations:
+    meta.crossplane.io/maintainer: "@applike-ss, @ss89"
+    meta.crossplane.io/source: "https://github.com/justtrack/provider-sentry"
+    meta.crossplane.io/license: "MIT"
+    meta.crossplane.io/description: |
+      This provider is used to create resources in your Sentry instances (https://sentry.io/)
