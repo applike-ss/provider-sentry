@@ -1,0 +1,22 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: IssueAlert
+metadata:
+  name: test-issue-alert
+spec:
+  forProvider:
+    organization: "sentry"
+    projectRef:
+      name: "test-project"
+    name: "Alert Rule - test-project"
+    actions:
+      - id: "sentry.rules.actions.notify_event_service.NotifyEventServiceAction"
+        service: "webhooks"
+    actionMatch: "any"
+    conditions:
+      - id: "sentry.rules.conditions.first_seen_event.FirstSeenEventCondition"
+    filterMatch: all
+    filters:
+      - id: "sentry.rules.filters.level.LevelFilter"
+        level: "40"
+        match: "gte"
+    frequency: 5

@@ -1,0 +1,15 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Key
+metadata:
+  name: test-project
+spec:
+  forProvider:
+    projectRef:
+      name: "test-project"
+    name: "test-project"
+    organization: "sentry"
+    rateLimitCount: 100
+    rateLimitWindow: 60
+  writeConnectionSecretToRef:
+    name: test-project-key
+    namespace: crossplane-system

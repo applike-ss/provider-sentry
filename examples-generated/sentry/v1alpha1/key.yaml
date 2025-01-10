@@ -1,0 +1,15 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: Key
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sentry/v1alpha1/key
+  labels:
+    testing.upbound.io/example-name: default
+  name: default
+spec:
+  forProvider:
+    name: My Key
+    organization: my-organization
+    projectSelector:
+      matchLabels:
+        testing.upbound.io/example-name: example

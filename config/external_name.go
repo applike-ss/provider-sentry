@@ -9,8 +9,11 @@ import "github.com/crossplane/upjet/pkg/config"
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
 var ExternalNameConfigs = map[string]config.ExternalName{
-	// Import requires using a randomly generated ID from provider: nl-2e21sda
-	"null_resource": config.IdentifierFromProvider,
+	"sentry_issue_alert": config.IdentifierFromProvider,
+	"sentry_key":         config.IdentifierFromProvider,
+	"sentry_plugin":      config.IdentifierFromProvider,
+	"sentry_project":     config.IdentifierFromProvider,
+	"sentry_team":        config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

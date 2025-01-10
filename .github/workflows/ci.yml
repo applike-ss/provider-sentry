@@ -10,8 +10,8 @@ on:
 
 env:
   # Common versions
-  GO_VERSION: '1.21'
-  GOLANGCI_VERSION: 'v1.54.0'
+  GO_VERSION: '1.23'
+  GOLANGCI_VERSION: 'v1.63.4'
   DOCKER_BUILDX_VERSION: 'v0.8.2'
 
   # Common users. We can't run a step 'if secrets.XXX != ""' but we can run a
@@ -103,6 +103,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: ${{ env.GOLANGCI_VERSION }}
+          args: '--timeout 5m'
 
   check-diff:
     runs-on: ubuntu-24.04
@@ -143,6 +144,9 @@ jobs:
 
       - name: Vendor Dependencies
         run: make vendor vendor.check
+
+      - name: Showing Diff
+        run: git diff
 
       - name: Check Diff
         run: make check-diff

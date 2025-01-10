@@ -1,0 +1,66 @@
+apiVersion: sentry.justtrack.io/v1alpha1
+kind: IssueAlert
+metadata:
+  annotations:
+    meta.upbound.io/example-id: sentry/v1alpha1/issuealert
+  labels:
+    testing.upbound.io/example-name: main
+  name: main
+spec:
+  forProvider:
+    actionMatch: any
+    actions:
+    - id: sentry.mail.actions.NotifyEmailAction
+      targetIdentifier: ""
+      targetType: IssueOwners
+    - id: sentry.mail.actions.NotifyEmailAction
+      targetIdentifier: ${sentry_team.main.team_id}
+      targetType: Team
+    - id: sentry.rules.actions.notify_event.NotifyEventAction
+    - channel: '#general'
+      id: sentry.integrations.slack.notify_action.SlackNotifyServiceAction
+      workspace: ${data.sentry_organization_integration.slack.internal_id}
+    conditions:
+    - id: sentry.rules.conditions.first_seen_event.FirstSeenEventCondition
+    - id: sentry.rules.conditions.regression_event.RegressionEventCondition
+    - comparisonType: count
+      id: sentry.rules.conditions.event_frequency.EventFrequencyCondition
+      interval: 1h
+      value: 100
+    - comparisonType: count
+      id: sentry.rules.conditions.event_frequency.EventUniqueUserFrequencyCondition
+      interval: 1h
+      value: 100
+    - comparisonType: count
+      id: sentry.rules.conditions.event_frequency.EventFrequencyPercentCondition
+      interval: 1h
+      value: "50.0"
+    filterMatch: any
+    filters:
+    - comparison_type: older
+      id: sentry.rules.filters.age_comparison.AgeComparisonFilter
+      time: minute
+      value: 10
+    - id: sentry.rules.filters.issue_occurrences.IssueOccurrencesFilter
+      value: 10
+    - id: sentry.rules.filters.assigned_to.AssignedToFilter
+      targetIdentifier: ${sentry_team.main.team_id}
+      targetType: Team
+    - id: sentry.rules.filters.latest_release.LatestReleaseFilter
+    - attribute: message
+      id: sentry.rules.filters.event_attribute.EventAttributeFilter
+      match: co
+      value: test
+    - id: sentry.rules.filters.tagged_event.TaggedEventFilter
+      key: test
+      match: co
+      value: test
+    - id: sentry.rules.filters.level.LevelFilter
+      level: "50"
+      match: eq
+    frequency: 30
+    name: My issue alert
+    organization: my-organization
+    projectSelector:
+      matchLabels:
+        testing.upbound.io/example-name: main
