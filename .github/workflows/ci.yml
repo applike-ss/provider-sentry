@@ -274,6 +274,12 @@ jobs:
           username: ${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR }}
           password: ${{ secrets.UPBOUND_MARKETPLACE_PUSH_ROBOT_PSW }}
 
+      - name: Install and login with up
+        uses: upbound/action-up@v1
+        with:
+          api-token: ${{ secrets.UP_API_TOKEN }}
+          organization: justtrack
+
       - name: Checkout
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
         with:
@@ -320,6 +326,9 @@ jobs:
         with:
           name: output
           path: _output/**
+
+      - name: Install up docker login credentials helper
+        run: curl -sL "https://cli.upbound.io" | BIN=docker-credential-up sh
 
       - name: Publish Artifacts
         if: env.UPBOUND_MARKETPLACE_PUSH_ROBOT_USR != ''
