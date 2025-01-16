@@ -2,6 +2,8 @@ apiVersion: sentry.justtrack.io/v1alpha1
 kind: IssueAlert
 metadata:
   name: test-issue-alert
+  annotations:
+    crossplane.io/external-name: sentry/test-project/197
 spec:
   forProvider:
     organization: "sentry"

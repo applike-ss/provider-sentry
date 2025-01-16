@@ -2,6 +2,8 @@ apiVersion: sentry.justtrack.io/v1alpha1
 kind: Key
 metadata:
   name: test-project
+  annotations:
+    crossplane.io/external-name: c5dc3effdfb9cfe0447ec2a4d751b876
 spec:
   forProvider:
     projectRef:

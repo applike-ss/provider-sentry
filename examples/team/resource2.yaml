@@ -2,6 +2,8 @@ apiVersion: sentry.justtrack.io/v1alpha1
 kind: Team
 metadata:
   name: test-team-2
+  annotations:
+    crossplane.io/external-name: test-team-2
 spec:
   forProvider:
     name: "Test Team 2"

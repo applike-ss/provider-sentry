@@ -2,6 +2,8 @@ apiVersion: sentry.justtrack.io/v1alpha1
 kind: Plugin
 metadata:
   name: test-plugin
+  annotations:
+    crossplane.io/external-name: webhooks
 spec:
   forProvider:
     organization: "sentry"
